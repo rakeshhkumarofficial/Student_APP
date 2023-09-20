@@ -37,7 +37,13 @@
             </div>
             <div class="col">
                 <label for="Current_Country" class="form-label">Country</label>
-                <InputText class="form-control" id="Current_Country" placeholder="Enter Country" @bind-Value="@Current_Address.Country" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;" />
+                <InputSelect class="form-control" id="Current_Country" @bind-Value="@Current_Address.Country" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;">
+                    <option value="" disabled selected>Select Country</option>
+                    @foreach (var country in _countryResponse)
+                    {
+                        <option value="@country.name">@country.name</option>
+                    }
+                </InputSelect>
                 
             </div>
             <div class="col">
@@ -63,7 +69,13 @@
             </div>
             <div class="col">
                 <label for="Permanent_Country" class="form-label">Country</label>
-                <InputText class="form-control" id="Permanent_Country" placeholder="Enter Country" @bind-Value="@Permanent_Address.Country" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;" />
+                <InputSelect class="form-control" id="Permanent_Country" @bind-Value="@Permanent_Address.Country" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;">
+                    <option value="" disabled selected>Select Country</option>
+                    @foreach (var country in _countryResponse)
+                    {
+                        <option value="@country.name">@country.name</option>
+                    }
+                </InputSelect>
                
             </div>
             <div class="col">

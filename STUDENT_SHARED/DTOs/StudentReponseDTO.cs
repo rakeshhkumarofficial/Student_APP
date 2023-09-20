@@ -21,6 +21,7 @@ namespace STUDENT_SHARED.DTOs
 
         [JsonPropertyName("updatedAt")]
         public DateTime UpdatedAt { get; set; }
+
         [JsonPropertyName("addresses")]
         public List<AddressResponseDTO> Addresses { get; set; } = new List<AddressResponseDTO>();
     }

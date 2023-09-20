@@ -11,6 +11,7 @@ namespace STUDENT_WEB.Services
     public class StudentContract : IStudentContract
     {
         private readonly HttpClient _httpClient;
+        private string baseURL = "http://localhost:7060/api/student";
 
         public StudentContract(HttpClient httpClient)
         {
@@ -21,7 +22,7 @@ namespace STUDENT_WEB.Services
         {
             try
             {
-                var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7060/api/student");
+                var request = new HttpRequestMessage(HttpMethod.Post, baseURL);
                 request.Content = new StringContent(JsonSerializer.Serialize(studentDTO), Encoding.UTF8, "application/json");
                 var result = await _httpClient.SendAsync(request);
 
@@ -43,7 +44,7 @@ namespace STUDENT_WEB.Services
         {
             try
             {
-                var response = await _httpClient.DeleteFromJsonAsync<ResponseDTO>($"https://localhost:7060/api/student/{Id}");
+                var response = await _httpClient.DeleteFromJsonAsync<ResponseDTO>($"{baseURL}/{Id}");
                 return response!;
             }
             catch (Exception)
@@ -56,7 +57,7 @@ namespace STUDENT_WEB.Services
         {
             try
             {
-                string apiUrl = $"https://localhost:7060/api/student?";
+                string apiUrl = $"{baseURL}?";
                 if (Id != Guid.Empty)
                 {
                     apiUrl += $"id={Id}&";
@@ -74,7 +75,7 @@ namespace STUDENT_WEB.Services
         {
             try
             {
-                var request = new HttpRequestMessage(HttpMethod.Put, $"https://localhost:7060/api/student/{Id}");
+                var request = new HttpRequestMessage(HttpMethod.Put, $"{baseURL}/{Id}");
                 request.Content = new StringContent(JsonSerializer.Serialize(studentUpdateDTO), Encoding.UTF8, "application/json");
 
                 var result = await _httpClient.SendAsync(request);

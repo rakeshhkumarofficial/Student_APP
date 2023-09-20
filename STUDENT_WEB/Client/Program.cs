@@ -13,5 +13,6 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 
 builder.Services.AddBlazoredToast();
 builder.Services.AddScoped<IStudentContract, StudentContract>();
+builder.Services.AddScoped<IAPIGatewayContract, APIGatewayContract>();
 
 await builder.Build().RunAsync();

@@ -27,6 +27,10 @@ namespace STUDENT_WEB.Pages.UpdateStudent
             await LoadData(parsedId);
         }
 
+        protected void NavigateToStudentList()
+        {
+            navigationManager!.NavigateTo("student-list");
+        }
         protected async Task LoadData(Guid Id)
         {
             _response = await studentContract!.GetAsync(Id);
