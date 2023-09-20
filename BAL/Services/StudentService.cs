@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using BAL.DTOs;
 using BAL.IServices;
 using DAL.IRepositories;
 using DAL.Models;
+using STUDENT_SHARED.DTOs;
 using System.Net;
 
 

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using BAL.DTOs;
 using DAL.Models;
+using STUDENT_SHARED.DTOs;
 
 namespace BAL.Mappings
 {

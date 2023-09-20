@@ -1,8 +1,7 @@
 ﻿using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
-using STUDENT_WEB.DTOs;
+using STUDENT_SHARED.DTOs;
 using STUDENT_WEB.Services.Contracts;
-using System.Threading.Tasks;
 
 
 namespace STUDENT_WEB.Pages.AddStudent

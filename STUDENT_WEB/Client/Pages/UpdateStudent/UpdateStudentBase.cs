@@ -1,9 +1,7 @@
 ﻿using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
-using STUDENT_WEB.DTOs;
-using STUDENT_WEB.Pages.StudentList;
+using STUDENT_SHARED.DTOs;
 using STUDENT_WEB.Services.Contracts;
-using System;
 using System.Text.Json;
 
 namespace STUDENT_WEB.Pages.UpdateStudent
@@ -34,24 +32,25 @@ namespace STUDENT_WEB.Pages.UpdateStudent
             _response = await studentContract!.GetAsync(Id);
             string responseData = JsonSerializer.Serialize(_response!.Data);
             student = JsonSerializer.Deserialize<StudentReponseDTO>(responseData)!;
-            studentUpdateDTO.Name = student.name;
-            studentUpdateDTO.Age = student.age;
-            studentUpdateDTO.Email = student.email;
-            AddressResponseDTO curr = student.addresses.FirstOrDefault(x => x.isPermanent == false)!;
-            current_Address.Id = curr.id;
-            current_Address.City = curr.city;
-            current_Address.State = curr.state;
-            current_Address.Country = curr.country;
-            current_Address.ZipCode = curr.zipCode;
-            current_Address.IsPermanent = curr.isPermanent;
+            
+            studentUpdateDTO.Name = student.Name;
+            studentUpdateDTO.Age = student.Age;
+            studentUpdateDTO.Email = student.Email;
+            AddressResponseDTO curr = student.Addresses.FirstOrDefault(x => x.IsPermanent == false)!;
+            current_Address.Id = curr.Id;
+            current_Address.City = curr.City;
+            current_Address.State = curr.State;
+            current_Address.Country = curr.Country;
+            current_Address.ZipCode = curr.ZipCode;
+            current_Address.IsPermanent = curr.IsPermanent;
 
-            AddressResponseDTO per = student.addresses.FirstOrDefault(x => x.isPermanent == true)!;
-            permanent_Address.Id = per.id;
-            permanent_Address.City = per.city;
-            permanent_Address.State = per.state;
-            permanent_Address.Country = per.country;
-            permanent_Address.ZipCode = per.zipCode;
-            permanent_Address.IsPermanent = per.isPermanent;
+            AddressResponseDTO per = student.Addresses.FirstOrDefault(x => x.IsPermanent == true)!;
+            permanent_Address.Id = per.Id;
+            permanent_Address.City = per.City;
+            permanent_Address.State = per.State;
+            permanent_Address.Country = per.Country;
+            permanent_Address.ZipCode = per.ZipCode;
+            permanent_Address.IsPermanent = per.IsPermanent;
             StateHasChanged();
         }
         protected async Task UpdateStudent_Click(StudentUpdateDTO studentUpdateDTO)
@@ -60,7 +59,7 @@ namespace STUDENT_WEB.Pages.UpdateStudent
             {
                 studentUpdateDTO.Addresses!.Add(current_Address);
                 studentUpdateDTO.Addresses!.Add(permanent_Address);
-                _response = await studentContract!.UpdateAsync(student.id , studentUpdateDTO);
+                _response = await studentContract!.UpdateAsync(student.Id , studentUpdateDTO);
                 if (_response.IsSuccess)
                 {
                     Toast!.ShowSuccess("Student Updated Successfully");

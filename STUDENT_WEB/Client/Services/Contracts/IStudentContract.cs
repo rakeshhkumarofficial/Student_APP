@@ -1,4 +1,4 @@
-﻿using STUDENT_WEB.DTOs;
+﻿using STUDENT_SHARED.DTOs;
 
 namespace STUDENT_WEB.Services.Contracts
 {

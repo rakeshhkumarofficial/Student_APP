@@ -1,10 +1,10 @@
-﻿using STUDENT_WEB.DTOs;
-using STUDENT_WEB.Services.Contracts;
+﻿using STUDENT_WEB.Services.Contracts;
 using System.Net.Http.Headers;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text;
 using System.Net.Http.Json;
+using STUDENT_SHARED.DTOs;
 
 namespace STUDENT_WEB.Services
 {

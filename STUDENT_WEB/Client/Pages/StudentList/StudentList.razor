@@ -24,9 +24,9 @@
                         SetAddress(student);
                     }
                     <tr>
-                        <td>@student!.name</td>
-                        <td>@student.age</td>
-                        <td>@student.email</td>
+                        <td>@student!.Name</td>
+                        <td>@student.Age</td>
+                        <td>@student.Email</td>
                         <td>
                             @Current_Address.City,
                             @Current_Address.State ,
@@ -40,8 +40,8 @@
                             @Permanent_Address.ZipCode
                         </td>
                         <td>
-                            <span class="btn-primary p-2 me-1 mt-1 btn-radius" @onclick="()=>NavigateToEditStudent(student.id)">Edit</span>
-                            <span class="btn-danger p-2 mt-1 btn-radius" @onclick="()=>DeleteStudent_Click(student.id)">Delete</span>
+                            <span class="btn-primary p-2 me-1 mt-1 btn-radius" @onclick="()=>NavigateToEditStudent(student.Id)">Edit</span>
+                            <span class="btn-danger p-2 mt-1 btn-radius" @onclick="()=>DeleteStudent_Click(student.Id)">Delete</span>
                         </td>
                     </tr>
                 }

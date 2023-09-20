@@ -1,11 +1,11 @@
-﻿using BAL.DTOs;
-using BAL.IServices;
+﻿using BAL.IServices;
 using DAL.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using STUDENT_SHARED.DTOs;
 using System.Net;
 
-namespace STUDENT_DEMO.Controllers
+namespace STUDENT_API.Controllers
 {
     [Route("api/student")]
     [ApiController]

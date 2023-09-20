@@ -1,4 +1,4 @@
-﻿namespace BAL.DTOs
+﻿namespace STUDENT_SHARED.DTOs
 {
     public class AddressDTO
     {
