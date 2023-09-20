@@ -1,0 +1,32 @@
+﻿h3 {
+    font-family: Segoe UI;
+}
+
+.container-fluid {
+    font-family: Segoe UI;
+    font-weight: 400;
+}
+
+.table {
+    margin: 0px;
+}
+
+.table thead {
+    background-color: #e9ecef;
+}
+
+.table thead {
+    font-weight: 500;
+    font-size: 15px;
+}
+
+
+.btn-radius {
+    border-radius: 5px;
+    font-weight: 500;
+    font-size: 15px;
+}
+
+.shadow {
+    box-shadow: 0 .5rem 1rem #00000026 !important;
+}

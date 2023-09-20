@@ -21,7 +21,7 @@ namespace STUDENT_WEB.Services
         {
             try
             {
-                var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7060/api/Student");
+                var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7060/api/student");
                 request.Content = new StringContent(JsonSerializer.Serialize(studentDTO), Encoding.UTF8, "application/json");
                 var result = await _httpClient.SendAsync(request);
 
@@ -43,7 +43,7 @@ namespace STUDENT_WEB.Services
         {
             try
             {
-                var response = await _httpClient.DeleteFromJsonAsync<ResponseDTO>($"https://localhost:7060/api/Student/{Id}");
+                var response = await _httpClient.DeleteFromJsonAsync<ResponseDTO>($"https://localhost:7060/api/student/{Id}");
                 return response!;
             }
             catch (Exception)
@@ -56,7 +56,12 @@ namespace STUDENT_WEB.Services
         {
             try
             {
-                var response = await _httpClient.GetFromJsonAsync<ResponseDTO>($"https://localhost:7060/api/Student/{Id}");
+                string apiUrl = $"https://localhost:7060/api/student?";
+                if (Id != Guid.Empty)
+                {
+                    apiUrl += $"id={Id}&";
+                }
+                var response = await _httpClient.GetFromJsonAsync<ResponseDTO>(apiUrl.TrimEnd('&'));
                 return response!;
             }
             catch (Exception)
@@ -65,11 +70,11 @@ namespace STUDENT_WEB.Services
             }
         }
 
-        public async Task<ResponseDTO> UpdateAsync(StudentUpdateDTO studentUpdateDTO)
+        public async Task<ResponseDTO> UpdateAsync(Guid Id, StudentUpdateDTO studentUpdateDTO)
         {
             try
             {
-                var request = new HttpRequestMessage(HttpMethod.Put, "https://localhost:7060/api/Student");
+                var request = new HttpRequestMessage(HttpMethod.Put, $"https://localhost:7060/api/student/{Id}");
                 request.Content = new StringContent(JsonSerializer.Serialize(studentUpdateDTO), Encoding.UTF8, "application/json");
 
                 var result = await _httpClient.SendAsync(request);

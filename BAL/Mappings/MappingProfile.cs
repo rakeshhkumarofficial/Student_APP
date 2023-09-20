@@ -12,6 +12,7 @@ namespace BAL.Mappings
             CreateMap<Address, AddressDTO>().ReverseMap();
             CreateMap<Student, StudentUpdateDTO>().ReverseMap();
             CreateMap<Address, AddressUpdateDTO>().ReverseMap();
+            CreateMap<Address, AddressResponseDTO>().ReverseMap();
         }
     }
 }

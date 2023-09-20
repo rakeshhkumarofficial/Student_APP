@@ -7,7 +7,7 @@ using System.Net;
 
 namespace STUDENT_DEMO.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/student")]
     [ApiController]
     public class StudentController : ControllerBase
     {
@@ -35,11 +35,18 @@ namespace STUDENT_DEMO.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ResponseDTO>> Get([FromQuery] Guid Id)
+        public async Task<ActionResult<ResponseDTO>> Get([FromQuery] Guid id)
         {
             try
             {
-                _response = await _studentService.GetByIdAsync(Id);
+                if (id != Guid.Empty)
+                {
+                    _response = await _studentService.GetByIdAsync(id);
+                }
+                else
+                {
+                    _response = await _studentService.GetAsync();
+                }
                 return _response;
             }
             catch (Exception)
@@ -49,12 +56,12 @@ namespace STUDENT_DEMO.Controllers
         }
 
         // Update Student By Id 
-        [HttpPut]
-        public async Task<ActionResult<ResponseDTO>> Put([FromBody] StudentUpdateDTO studentDTO)
+        [HttpPut("{id:Guid}")]
+        public async Task<ActionResult<ResponseDTO>> Put([FromRoute] Guid id, [FromBody] StudentUpdateDTO studentDTO)
         {
             try
             {
-                _response = await _studentService.UpdateAsync(studentDTO);
+                _response = await _studentService.UpdateAsync(id, studentDTO);
                 return _response;
             }
             catch (Exception)

@@ -6,7 +6,7 @@ namespace STUDENT_WEB.Services.Contracts
     {
         Task<ResponseDTO> CreateAsync(StudentDTO studentDTO);
         Task<ResponseDTO> GetAsync(Guid Id);
-        Task<ResponseDTO> UpdateAsync(StudentUpdateDTO studentUpdateDTO);
+        Task<ResponseDTO> UpdateAsync(Guid Id , StudentUpdateDTO studentUpdateDTO);
         Task<ResponseDTO> DeleteAsync(Guid Id);
     }
 }

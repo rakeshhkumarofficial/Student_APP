@@ -89,6 +89,24 @@ namespace DAL.Repositories
         }
 
         /// <summary>
+        /// Get all students
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<Student>> GetAsync()
+        {
+            try
+            {
+                List<Student>? students = await _dbContext.Student.ToListAsync();
+                return students!;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        /// <summary>
         /// Update Student
         /// </summary>
         /// <param name="student"></param>

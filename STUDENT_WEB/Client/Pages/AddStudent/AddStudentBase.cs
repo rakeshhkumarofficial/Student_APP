@@ -17,15 +17,15 @@ namespace STUDENT_WEB.Pages.AddStudent
         public IStudentContract? studentContract { get; set; }
         [Inject]
         public IToastService? Toast { get; set; }
-        protected override Task OnInitializedAsync()
-        {
-            return base.OnInitializedAsync();
-        }
+        [Inject]
+        NavigationManager? navigationManager { get; set; }
 
         protected async Task CreateStudent_Click(StudentDTO studentDTO)
         {
             try
             {
+                Current_Address.IsPermanent = false;
+                Permanent_Address.IsPermanent = true;   
                 studentDTO.Addresses!.Add(Current_Address);
                 studentDTO.Addresses!.Add(Permanent_Address);
                 _response = await studentContract!.CreateAsync(studentDTO);
@@ -35,6 +35,7 @@ namespace STUDENT_WEB.Pages.AddStudent
                 }
                 await OnInitializedAsync();
                 StateHasChanged();
+                navigationManager!.NavigateTo("student-list");
             }
             catch (Exception)
             {

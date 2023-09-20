@@ -1,0 +1,90 @@
+﻿@page "/edit-student"
+@using STUDENT_WEB.DTOs;
+@inherits UpdateStudentBase
+<h3>Edit Student</h3>
+<div class="container p-3 shadow">
+    <EditForm Model="@studentUpdateDTO" OnValidSubmit="()=>(UpdateStudent_Click(studentUpdateDTO))">
+        <DataAnnotationsValidator />
+        <div class="row mb-3">
+            <div class="col">
+                <label for="Name" class="form-label">Name</label>
+                <InputText class="form-control" type="text" id="Name" placeholder="Enter Name" @bind-Value="@studentUpdateDTO!.Name" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;" />
+                <ValidationMessage For="@(() => studentUpdateDTO.Name)" />
+            </div>
+            <div class="col">
+                <label for="Age" class="form-label">Age</label>
+                <InputNumber class="form-control" type="number" id="Age" placeholder="Enter Age" @bind-Value="@studentUpdateDTO.Age" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;" />
+                <ValidationMessage For="@(() => studentUpdateDTO.Age)" />
+            </div>
+            <div class="col">
+                <label for="Email" class="form-label">Email</label>
+                <InputText class="form-control" type="text" id="Name" placeholder="Enter Email" @bind-Value="@studentUpdateDTO.Email" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;" />
+                <ValidationMessage For="@(() => studentUpdateDTO.Email)" />
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <h5>Current Address</h5>
+            <div class="col">
+                <label for="Current_City" class="form-label">City</label>
+                <InputText class="form-control" id="Current_City" placeholder="Enter City" @bind-Value="@current_Address.City" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;" />
+            </div>
+            <div class="col">
+                <label for="Current_State" class="form-label">State</label>
+                <InputText class="form-control" id="Current_State" placeholder="Enter State" @bind-Value="@current_Address.State" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;" />
+
+            </div>
+            <div class="col">
+                <label for="Current_Country" class="form-label">Country</label>
+                <InputText class="form-control" id="Current_Country" placeholder="Enter Country" @bind-Value="@current_Address.Country" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;" />
+
+            </div>
+            <div class="col">
+                <label for="Current_ZipCode" class="form-label">Zip Code</label>
+                <InputNumber class="form-control" id="Current_ZipCode" placeholder="Enter Zip Code" @bind-Value="@current_Address.ZipCode" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;" />
+
+            </div>
+
+        </div>
+
+        <div class="row mb-3">
+            <h5>Permanent Address</h5>
+            <div class="col">
+                <label for="Permanent_City" class="form-label">City</label>
+                <InputText class="form-control" id="Permanent_City" placeholder="Enter City" @bind-Value="@permanent_Address.City" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;" />
+
+            </div>
+            <div class="col">
+                <label for="Permanent_State" class="form-label">State</label>
+                <InputText class="form-control" id="Permanent_State" placeholder="Enter State" @bind-Value="@permanent_Address.State" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;" />
+
+            </div>
+            <div class="col">
+                <label for="Permanent_Country" class="form-label">Country</label>
+                <InputText class="form-control" id="Permanent_Country" placeholder="Enter Country" @bind-Value="@permanent_Address.Country" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;" />
+
+            </div>
+            <div class="col">
+                <label for="Permanent_ZipCode" class="form-label">Zip Code</label>
+                <InputNumber class="form-control" id="Permanent_ZipCode" placeholder="Enter Zip Code" @bind-Value="@permanent_Address.ZipCode" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;" />
+
+            </div>
+
+        </div>
+
+        <div class="row text-center">
+            <div class="col">
+                <button type="submit" class="update-button">Update</button>
+            </div>
+        </div>
+
+    </EditForm>
+
+</div>
+
+@code {
+
+  
+
+}
+

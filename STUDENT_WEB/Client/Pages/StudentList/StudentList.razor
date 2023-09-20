@@ -1,0 +1,63 @@
+﻿@page "/student-list"
+@inherits StudentListBase
+@inject NavigationManager Navigation
+
+<h3>Student List</h3>
+<div class="container-fluid shadow">
+    <div class="row">
+        <table class="table">
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Age</td>
+                    <td>Email</td>
+                    <td>Current Address</td>
+                    <td>Permanent Address</td>
+                    <td>ACTION</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var student in studentList)
+                {
+                    @if (student != null)
+                    {
+                        SetAddress(student);
+                    }
+                    <tr>
+                        <td>@student!.name</td>
+                        <td>@student.age</td>
+                        <td>@student.email</td>
+                        <td>
+                            @Current_Address.City,
+                            @Current_Address.State ,
+                            @Current_Address.Country,
+                            @Current_Address.ZipCode
+                        </td>
+                        <td>
+                            @Permanent_Address.City,
+                            @Permanent_Address.State ,
+                            @Permanent_Address.Country,
+                            @Permanent_Address.ZipCode
+                        </td>
+                        <td>
+                            <span class="btn-primary p-2 me-1 mt-1 btn-radius" @onclick="()=>NavigateToEditStudent(student.id)">Edit</span>
+                            <span class="btn-danger p-2 mt-1 btn-radius" @onclick="()=>DeleteStudent_Click(student.id)">Delete</span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+@code {
+    private void NavigateToEditStudent(Guid Id)
+    {
+        string url = $"/edit-student?id={Id}";
+        Navigation.NavigateTo(url);
+    }
+
+    
+
+}
