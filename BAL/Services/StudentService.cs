@@ -37,8 +37,11 @@ namespace BAL.Services
                     {
                         Id = student.Id,
                         Name = student.Name,
-                        Age = student.Age,
                         Email = student.Email,
+                        Gender = student.Gender,
+                        DateOfBirth = student.DateOfBirth,
+                        IsHindi = student.IsHindi,
+                        IsEnglish = student.IsEnglish,
                         CreatedAt = student.CreatedAt,
                         UpdatedAt = student.UpdatedAt,
                         Addresses = _mapper.Map<List<AddressResponseDTO>>(addresses)
@@ -68,19 +71,19 @@ namespace BAL.Services
                     return _response;
                 }
 
-                if (studentDTO.Age == 0)
-                {
-                    _response.IsSuccess = false;
-                    _response.StatusCode = HttpStatusCode.BadRequest;
-                    _response.Message = "Age Should be greater than zero";
-                    return _response;
-                }
-
                 if (string.IsNullOrEmpty(studentDTO.Email))
                 {
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     _response.Message = "Please enter the valid email";
+                    return _response;
+                }
+
+                if (studentDTO.DateOfBirth == DateTime.MinValue)
+                {
+                    _response.IsSuccess = false;
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                    _response.Message = "Please Enter Your date of birth";
                     return _response;
                 }
 
@@ -120,8 +123,11 @@ namespace BAL.Services
                 {
                     Id = student.Id,
                     Name = student.Name,
-                    Age = student.Age,
                     Email = student.Email,
+                    Gender = student.Gender,
+                    DateOfBirth = student.DateOfBirth,
+                    IsHindi = student.IsHindi,
+                    IsEnglish = student.IsEnglish,
                     CreatedAt = student.CreatedAt,
                     UpdatedAt = student.UpdatedAt,
                     Addresses = _mapper.Map<List<AddressResponseDTO>>(addresses)
@@ -184,8 +190,11 @@ namespace BAL.Services
                 {
                     Id = student.Id,
                     Name = student.Name,
-                    Age = student.Age,
                     Email = student.Email,
+                    Gender = student.Gender,
+                    DateOfBirth = student.DateOfBirth,
+                    IsHindi = student.IsHindi,
+                    IsEnglish = student.IsEnglish,
                     CreatedAt = student.CreatedAt,
                     UpdatedAt = student.UpdatedAt,
                     Addresses = _mapper.Map<List<AddressResponseDTO>>(addresses)
@@ -220,10 +229,7 @@ namespace BAL.Services
                 {
                     student.Name = studentDTO.Name;
                 }
-                if (studentDTO.Age != 0)
-                {
-                    student.Age = studentDTO.Age;
-                }
+
                 if (!string.IsNullOrEmpty(studentDTO.Email))
                 {
                     if (student.Email!.ToLower() != studentDTO.Email.ToLower())
@@ -239,6 +245,11 @@ namespace BAL.Services
                         student.Email = studentDTO.Email;
                     }
                 }
+                student.DateOfBirth = studentDTO.DateOfBirth;
+                student.Gender = studentDTO.Gender;
+                student.IsEnglish = studentDTO.IsEnglish;
+                student.IsHindi = studentDTO.IsHindi;
+                
                 student.UpdatedAt = DateTime.Now;
                 await _studentRepository.UpdateAsync(student);
 
@@ -264,8 +275,11 @@ namespace BAL.Services
                 {
                     Id = student.Id,
                     Name = student.Name,
-                    Age = student.Age,
                     Email = student.Email,
+                    Gender = student.Gender,
+                    DateOfBirth = student.DateOfBirth,
+                    IsHindi = student.IsHindi,
+                    IsEnglish = student.IsEnglish,
                     CreatedAt = student.CreatedAt,
                     UpdatedAt = student.UpdatedAt,
                     Addresses = _mapper.Map<List<AddressResponseDTO>>(addresses)

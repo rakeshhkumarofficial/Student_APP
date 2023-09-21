@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace STUDENT_SHARED.DTOs
 {
@@ -10,11 +11,20 @@ namespace STUDENT_SHARED.DTOs
         [JsonPropertyName("name")]
         public string? Name { get; set; }
 
-        [JsonPropertyName("age")]
-        public int Age { get; set; }
-
         [JsonPropertyName("email")]
         public string? Email { get; set; }
+
+        [JsonPropertyName("gender")]
+        public int Gender { get; set; }
+
+        [JsonPropertyName("dateofBirth")]
+        public DateTime DateOfBirth { get; set; } 
+
+        [JsonPropertyName("isHindi")]
+        public bool IsHindi { get; set; }
+
+        [JsonPropertyName("isEnglish")]
+        public bool IsEnglish { get; set; }
 
         [JsonPropertyName("createdAt")]
         public DateTime CreatedAt { get; set; }

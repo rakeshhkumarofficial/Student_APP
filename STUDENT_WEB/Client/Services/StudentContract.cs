@@ -11,7 +11,7 @@ namespace STUDENT_WEB.Services
     public class StudentContract : IStudentContract
     {
         private readonly HttpClient _httpClient;
-        private string baseURL = "http://localhost:7060/api/student";
+        private string baseURL = "https://localhost:7060/api/student";
 
         public StudentContract(HttpClient httpClient)
         {
@@ -63,6 +63,7 @@ namespace STUDENT_WEB.Services
                     apiUrl += $"id={Id}&";
                 }
                 var response = await _httpClient.GetFromJsonAsync<ResponseDTO>(apiUrl.TrimEnd('&'));
+                Console.WriteLine(response);
                 return response!;
             }
             catch (Exception)

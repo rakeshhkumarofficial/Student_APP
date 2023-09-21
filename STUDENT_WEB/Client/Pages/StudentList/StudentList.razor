@@ -3,55 +3,69 @@
 @inject NavigationManager Navigation
 
 <DeleteConfirmation ConfirmationChanged="ConfirmDelete_Click" Title="Delete Student" Message="Are you sure ?" ButtonText="Yes, Delete"></DeleteConfirmation>
-<h3>Student List</h3>
-<div class="container-fluid shadow">
-    <div class="row">
-        <table class="table">
-            <thead>
-                <tr>
-                    <td>Name</td>
-                    <td>Age</td>
-                    <td>Email</td>
-                    <td>Current Address</td>
-                    <td>Permanent Address</td>
-                    <td>ACTION</td>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach(var student in studentList)
-                {
-                    @if (student != null)
-                    {
-                        SetAddress(student);
-                    }
+
+
+@if (studentList.Count != 0)
+{
+    <h3>Student List</h3>
+    <div class="container-fluid shadow">
+        <div class="row">
+            <table class="table">
+                <thead>
                     <tr>
-                        <td>@student!.Name</td>
-                        <td>@student.Age</td>
-                        <td>@student.Email</td>
-                        <td>
-                            @Current_Address.City,
-                            @Current_Address.State ,
-                            @Current_Address.Country,
-                            @Current_Address.ZipCode
-                        </td>
-                        <td>
-                            @Permanent_Address.City,
-                            @Permanent_Address.State ,
-                            @Permanent_Address.Country,
-                            @Permanent_Address.ZipCode
-                        </td>
-                        <td>
-                            <span class="Edit-button" @onclick="()=>NavigateToEditStudent(student.Id)"><i class="fa-solid fa-pen-to-square"></i></span>
-                            <span class="Delete-button" @onclick:preventDefault=true @onclick="()=>HandleDelete(student.Id)"><i class="fa-solid fa-trash"></i></span>
-                        </td>
+                        <td>Name</td>
+                        <td>Email</td>
+                        <td>Gender</td>
+                        <td>Date of Birth</td>
+                        <td>Current Address</td>
+                        <td>ACTION</td>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var student in studentList)
+                    {
+
+                        <tr>
+                            <td>@student!.Name</td>
+                            <td>@student.Email</td>
+                            @if (student.Gender == 1)
+                            {
+                                <td>Male</td>
+                            }
+                            else
+                            {
+                                <td>Female</td>
+                            }
+
+                            <td>@student.DateOfBirth.ToString("yyyy-MM-dd")</td>
+                            @if (student != null)
+                            {
+                                studentResponse = student;
+                                SetAddress();
+                            }
+                            <td>
+                                @Current_Address.City,
+                                @Current_Address.State ,
+                                @Current_Address.Country,
+                                @Current_Address.ZipCode
+                            </td>
+
+                            <td>
+                                <span class="Edit-button" @onclick="()=>NavigateToEditStudent(student!.Id)"><i class="fa-solid fa-pen-to-square"></i></span>
+                                <span class="Delete-button" @onclick:preventDefault=true @onclick="()=>HandleDelete(student!.Id)"><i class="fa-solid fa-trash"></i></span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
     </div>
-
-</div>
-
+}
+else
+{
+    <h3>No Records</h3>
+}
 @code {
     private void NavigateToEditStudent(Guid Id)
     {

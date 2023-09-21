@@ -11,5 +11,6 @@ namespace DAL.Data
 
         public DbSet<Student> Student { get ; set; }
         public DbSet<Address> Address { get; set; }
+
     }
 }

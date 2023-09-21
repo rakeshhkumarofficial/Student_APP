@@ -13,8 +13,9 @@ namespace STUDENT_SHARED.DTOs
         public string? State { get; set; }
         [JsonPropertyName("country")]
         public string? Country { get; set; }
-        [JsonPropertyName("zipcode")]
+        [JsonPropertyName("zipCode")]
         public int ZipCode { get; set; }
+
         [JsonPropertyName("isPermanent")]
         public bool IsPermanent { get; set; }
 

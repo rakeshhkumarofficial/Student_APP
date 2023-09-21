@@ -1,5 +1,5 @@
 ﻿using STUDENT_SHARED.DTOs;
-using STUDENT_WEB.APIGatewayModels;
+using STUDENT_WEB.Models;
 
 namespace STUDENT_WEB.Services.Contracts
 {

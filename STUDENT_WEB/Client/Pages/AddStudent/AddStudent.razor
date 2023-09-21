@@ -1,55 +1,106 @@
 ﻿@page "/add-student"
 @page "/"
 @using STUDENT_SHARED.DTOs;
+@using STUDENT_WEB.Models;
 @inherits AddStudentBase
 <h3>Add Student</h3>
 <div class="container p-3 shadow">
-    <EditForm Model="@studentDTO" OnValidSubmit="()=>(CreateStudent_Click(studentDTO))">
+    <EditForm Model="@studentAddressModel" OnValidSubmit="()=>(CreateStudent_Click(studentAddressModel))">
         <DataAnnotationsValidator />
         <div class="row mb-3">
             <div class="col">
                 <label for="Name" class="form-label">Name</label>
-                <InputText class="form-control" type="text" id="Name" placeholder="Enter Name" @bind-Value="@studentDTO.Name" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;" />
-                <ValidationMessage For="@(() => studentDTO.Name)" />
-            </div>
-            <div class="col">
-                <label for="Age" class="form-label">Age</label>
-                <InputNumber class="form-control" type="number" id="Age" placeholder="Enter Age" @bind-Value="@studentDTO.Age" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;" />
-                <ValidationMessage For="@(() => studentDTO.Age)" />
+                <InputText class="form-control" type="text" id="Name" placeholder="Enter Name" @bind-Value="@studentAddressModel.Name" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;" />
+                <ValidationMessage For="@(() => studentAddressModel.Name)" />
             </div>
             <div class="col">
                 <label for="Email" class="form-label">Email</label>
-                <InputText class="form-control" type="text" id="Name" placeholder="Enter Email" @bind-Value="@studentDTO.Email" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;" />
-                <ValidationMessage For="@(() => studentDTO.Email)" />
+                <InputText class="form-control" type="text" id="Name" placeholder="Enter Email" @bind-Value="@studentAddressModel.Email" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;" />
+                <ValidationMessage For="@(() => studentAddressModel.Email)" />
+            </div>
+            <div class="col">
+                <label for="DateOfBirth" class="form-label">Date Of Birth</label>
+                <InputDate class="form-control" id="DateOfBirth" placeholder="Select Date" @bind-Value="@studentAddressModel.DateOfBirth" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;" />
+                <ValidationMessage For="@(() => studentAddressModel.DateOfBirth)" />
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col">
+                <label for="Gender" class="form-label">Gender</label><br />
+                <InputRadioGroup  @bind-Value="@studentAddressModel.Gender">
+                    <InputRadio  Value="1" /> Male
+                    <InputRadio  Value="2" /> Female
+                </InputRadioGroup>
+                <ValidationMessage For="@(() => studentAddressModel.Gender)" />
+            </div>
+
+            <div class="col">
+                <label>Languages</label><br />
+                <label for="hindi" class="form-label">Hindi</label>
+                <InputCheckbox id="hindi" @bind-Value=@studentAddressModel.IsHindi />
+                <label for="english">English</label>
+                <InputCheckbox id="english" @bind-Value=@studentAddressModel.IsEnglish />
             </div>
         </div>
 
         <div class="row mb-3">
             <h5>Current Address</h5>
             <div class="col">
-                <label for="Current_City" class="form-label">City</label>
-                <InputText class="form-control" id="Current_City" placeholder="Enter City" @bind-Value="@Current_Address.City" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;" />
+                <label for="Current_Country" class="form-label">Country</label>
+                <InputSelect class="form-control" id="Current_Country" @bind-Value="@studentAddressModel.CurrentCountry" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;">
+                    <option value="" disabled selected>Select Country</option>
+                    @foreach (var country in countries)
+                    {
+                        CountryId1 = country.Id;
+                        <option value="@country.Name">@country.Name</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => studentAddressModel.CurrentCountry)" />
+
             </div>
             <div class="col">
                 <label for="Current_State" class="form-label">State</label>
-                <InputText class="form-control" id="Current_State" placeholder="Enter State" @bind-Value="@Current_Address.State" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;" />
-                
-            </div>
-            <div class="col">
-                <label for="Current_Country" class="form-label">Country</label>
-                <InputSelect class="form-control" id="Current_Country" @bind-Value="@Current_Address.Country" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;">
-                    <option value="" disabled selected>Select Country</option>
-                    @foreach (var country in _countryResponse)
+               @*  <InputText class="form-control" id="Current_State" placeholder="Enter State" @bind-Value="@studentAddressModel.CurrentState" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;" />
+                <ValidationMessage For="@(() => studentAddressModel.CurrentState)" /> *@
+                <InputSelect class="form-control" id="Current_State" @bind-Value="@studentAddressModel.CurrentState" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;">
+                    <option value="" disabled selected>Select State</option>
+                    @if (!string.IsNullOrEmpty(studentAddressModel.CurrentCountry))
                     {
-                        <option value="@country.name">@country.name</option>
+                        CountryId1 = countries.FirstOrDefault(x => x.Name.ToLower() == studentAddressModel.CurrentCountry.ToLower())!.Id;
+                    }
+                    @foreach (var state in states.Where(x => x.CountryId == CountryId1))
+                    {
+                        StateId1 = state.Id;
+                        <option value="@state.Name">@state.Name</option>
                     }
                 </InputSelect>
-                
+                <ValidationMessage For="@(() => studentAddressModel.CurrentState)" />
+
             </div>
             <div class="col">
+                <label for="Current_City" class="form-label">City</label>
+               @*  <InputText class="form-control" id="Current_City" placeholder="Enter City" @bind-Value="@studentAddressModel.CurrentCity" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;" />
+                <ValidationMessage For="@(() => studentAddressModel.CurrentCity)" /> *@
+                <InputSelect class="form-control" id="Current_City" @bind-Value="@studentAddressModel.CurrentCity" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;">
+                    <option value="" disabled selected>Select City</option>
+                    @if (!string.IsNullOrEmpty(studentAddressModel.CurrentState))
+                    {
+                        StateId1 = states.FirstOrDefault(x => x.Name.ToLower() == studentAddressModel.CurrentState.ToLower())!.Id;
+                    }
+                    @foreach (var city in cities.Where(x => x.StateId == StateId1))
+                    {
+                        <option value="@city.Name">@city.Name</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => studentAddressModel.CurrentCity)" />
+            </div>
+            
+            
+            <div class="col">
                 <label for="Current_ZipCode" class="form-label">Zip Code</label>
-                <InputNumber class="form-control" id="Current_ZipCode" placeholder="Enter Zip Code" @bind-Value="@Current_Address.ZipCode" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;" />
-                
+                <InputNumber class="form-control" id="Current_ZipCode" placeholder="Enter Zip Code" @bind-Value="@studentAddressModel.CurrentZipCode" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;" />
+                <ValidationMessage For="@(() => studentAddressModel.CurrentZipCode)" />
             </div>
            
         </div>
@@ -57,31 +108,61 @@
         <div class="row mb-3">
             <h5>Permanent Address</h5>
             <div class="col">
-                <label for="Permanent_City" class="form-label">City</label>
-                <InputText class="form-control" id="Permanent_City" placeholder="Enter City" @bind-Value="@Permanent_Address.City" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;" />
-                
+                <label for="Permanent_Country" class="form-label">Country</label>
+                <InputSelect class="form-control" id="Permanent_Country" @bind-Value="@studentAddressModel.PermanentCountry" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;">
+                    <option value="" disabled selected>Select Country</option>
+                    @foreach (var country in countries)
+                    {
+                        CountryId2 = country.Id;
+                        <option value="@country.Name">@country.Name</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => studentAddressModel.PermanentCountry)" />
 
             </div>
             <div class="col">
                 <label for="Permanent_State" class="form-label">State</label>
-                <InputText class="form-control" id="Permanent_State" placeholder="Enter State" @bind-Value="@Permanent_Address.State" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;" />
-               
-            </div>
-            <div class="col">
-                <label for="Permanent_Country" class="form-label">Country</label>
-                <InputSelect class="form-control" id="Permanent_Country" @bind-Value="@Permanent_Address.Country" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;">
-                    <option value="" disabled selected>Select Country</option>
-                    @foreach (var country in _countryResponse)
+                @*  <InputText class="form-control" id="Permanent_State" placeholder="Enter State" @bind-Value="@studentAddressModel.PermanentState" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;" />
+                <ValidationMessage For="@(() => studentAddressModel.PermanentState)" /> *@
+                <InputSelect class="form-control" id="Permanent_State" @bind-Value="@studentAddressModel.PermanentState" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;">
+                    <option value="" disabled selected>Select State</option>
+                    @if (!string.IsNullOrEmpty(studentAddressModel.PermanentCountry))
                     {
-                        <option value="@country.name">@country.name</option>
+                        CountryId2 = countries.FirstOrDefault(x => x.Name.ToLower() == studentAddressModel.PermanentCountry.ToLower())!.Id;
+                    }
+                    @foreach (var state in states.Where(x => x.CountryId == CountryId2))
+                    {
+                        StateId2 = state.Id;
+                        <option value="@state.Name">@state.Name</option>
                     }
                 </InputSelect>
-               
+                <ValidationMessage For="@(() => studentAddressModel.PermanentState)" />
+
             </div>
             <div class="col">
+                <label for="Permanent_City" class="form-label">City</label>
+               @*  <InputText class="form-control" id="Permanent_City" placeholder="Enter City" @bind-Value="@studentAddressModel.PermanentCity" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;" />
+                <ValidationMessage For="@(() => studentAddressModel.PermanentCity)" /> *@
+                <InputSelect class="form-control" id="Permanent_State" @bind-Value="@studentAddressModel.PermanentCity" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;">
+                    <option value="" disabled selected>Select City</option>
+                    @if (!string.IsNullOrEmpty(studentAddressModel.PermanentState))
+                    {
+                        StateId2 = states.FirstOrDefault(x => x.Name.ToLower() == studentAddressModel.PermanentState.ToLower())!.Id;
+                    }
+                    @foreach (var city in cities.Where(x=>x.StateId==StateId2))
+                    {
+                        <option value="@city.Name">@city.Name</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => studentAddressModel.PermanentCity)" />
+
+            </div>
+            
+            
+            <div class="col">
                 <label for="Permanent_ZipCode" class="form-label">Zip Code</label>
-                <InputNumber class="form-control" id="Permanent_ZipCode" placeholder="Enter Zip Code" @bind-Value="@Permanent_Address.ZipCode" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;" />
-                
+                <InputNumber class="form-control" id="Permanent_ZipCode" placeholder="Enter Zip Code" @bind-Value="@studentAddressModel.PermanentZipCode" style="border: none !important; background-color: #F0F0F0 !important;border-radius: 6px !important;" />
+                <ValidationMessage For="@(() => studentAddressModel.PermanentZipCode)" />
             </div>
            
         </div>
@@ -97,6 +178,34 @@
 </div>
 
 @code {
+    private int CountryId1;
+    private int StateId1;
+    private int CountryId2;
+    private int StateId2;
+    List<Countries> countries = new List<Countries>()
+    {
+        new Countries{ Id = 1 , Name = "India"},
+        new Countries{ Id = 2 , Name = "USA"}
+    };
+
+    List<States> states = new List<States>()
+    {
+        new States{ Id = 1 , Name = "Punjab" , CountryId=1 },
+        new States{ Id = 2 , Name = "Haryana", CountryId=1},
+        new States{ Id = 3 , Name = "California" , CountryId=2 },
+        new States{ Id = 4 , Name = "Florida", CountryId=2},
+    };
+
+    List<Cities> cities = new List<Cities>()
+    {
+        new Cities{ Id = 1 , Name = "Ludhiana" , StateId=1 },
+        new Cities{ Id = 2 , Name = "Chandigarh", StateId=1},
+        new Cities{ Id = 3 , Name = "Gurugram", StateId=2},
+        new Cities{ Id = 4 , Name = "Panchkula" , StateId=2 },
+        new Cities{ Id = 5 , Name = "Agoura Hills", StateId=3},
+        new Cities{ Id = 6 , Name = "FL Alford", StateId=4},
+    };
 
 
+    
 }

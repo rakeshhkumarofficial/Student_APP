@@ -1,6 +1,8 @@
 ﻿using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 using STUDENT_SHARED.DTOs;
+using STUDENT_WEB.Models;
+using STUDENT_WEB.Services;
 using STUDENT_WEB.Services.Contracts;
 using System.Text.Json;
 
@@ -10,9 +12,14 @@ namespace STUDENT_WEB.Pages.UpdateStudent
     {
         public ResponseDTO _response = new ResponseDTO();
         public StudentUpdateDTO studentUpdateDTO = new StudentUpdateDTO();
-        public AddressUpdateDTO current_Address = new AddressUpdateDTO();
-        public AddressUpdateDTO permanent_Address = new AddressUpdateDTO();
+        public Guid studentId = Guid.Empty; 
+        public Guid current_AddressId = Guid.Empty;
+        public Guid permanent_AddressId = Guid.Empty;
         public StudentReponseDTO student = new StudentReponseDTO();
+        public StudentAddressModel studentAddressModel = new StudentAddressModel();
+        public List<CountryResponse> _countryResponse = new List<CountryResponse>();
+        [Inject]
+        public IAPIGatewayContract? apiGatewayContract { get; set; }
         [Inject]
         public IStudentContract? studentContract { get; set; }
         [Inject]
@@ -21,49 +28,80 @@ namespace STUDENT_WEB.Pages.UpdateStudent
         NavigationManager? navigationManager { get; set; }
         protected override async Task OnInitializedAsync()
         {
+           // await GetCountryData();
             var uri = new Uri(navigationManager!.Uri);
             var idValue = System.Web.HttpUtility.ParseQueryString(uri.Query).Get("id");
-            Guid.TryParse(idValue, out var parsedId) ;
-            await LoadData(parsedId);
+            Guid.TryParse(idValue, out var studentId) ;
+            await LoadData(studentId);
         }
 
         protected void NavigateToStudentList()
         {
             navigationManager!.NavigateTo("student-list");
         }
+
+        //protected async Task GetCountryData()
+        //{
+        //    _countryResponse = await apiGatewayContract!.GetCountryNameAsync();
+        //    StateHasChanged();
+        //}
         protected async Task LoadData(Guid Id)
         {
             _response = await studentContract!.GetAsync(Id);
             string responseData = JsonSerializer.Serialize(_response!.Data);
             student = JsonSerializer.Deserialize<StudentReponseDTO>(responseData)!;
-            
-            studentUpdateDTO.Name = student.Name;
-            studentUpdateDTO.Age = student.Age;
-            studentUpdateDTO.Email = student.Email;
+            studentId = student.Id;
+            studentAddressModel.Name = student.Name;
+            studentAddressModel.Email = student.Email;
+            studentAddressModel.Gender = student.Gender;
+            studentAddressModel.DateOfBirth = student.DateOfBirth;
+            studentAddressModel.IsHindi = student.IsHindi;
+            studentAddressModel.IsEnglish = student.IsEnglish;
             AddressResponseDTO curr = student.Addresses.FirstOrDefault(x => x.IsPermanent == false)!;
-            current_Address.Id = curr.Id;
-            current_Address.City = curr.City;
-            current_Address.State = curr.State;
-            current_Address.Country = curr.Country;
-            current_Address.ZipCode = curr.ZipCode;
-            current_Address.IsPermanent = curr.IsPermanent;
+            current_AddressId = curr.Id;
+            studentAddressModel.CurrentCity = curr.City;
+            studentAddressModel.CurrentState = curr.State;
+            studentAddressModel.CurrentCountry = curr.Country;
+            studentAddressModel.CurrentZipCode = curr.ZipCode;
 
             AddressResponseDTO per = student.Addresses.FirstOrDefault(x => x.IsPermanent == true)!;
-            permanent_Address.Id = per.Id;
-            permanent_Address.City = per.City;
-            permanent_Address.State = per.State;
-            permanent_Address.Country = per.Country;
-            permanent_Address.ZipCode = per.ZipCode;
-            permanent_Address.IsPermanent = per.IsPermanent;
+            permanent_AddressId = per.Id;
+            studentAddressModel.PermanentCity = per.City;
+            studentAddressModel.PermanentState = per.State;
+            studentAddressModel.PermanentCountry = per.Country;
+            studentAddressModel.PermanentZipCode = per.ZipCode;
             StateHasChanged();
         }
-        protected async Task UpdateStudent_Click(StudentUpdateDTO studentUpdateDTO)
+        protected async Task UpdateStudent_Click(StudentAddressModel studentAddressModel)
         {
             try
             {
-                studentUpdateDTO.Addresses!.Add(current_Address);
-                studentUpdateDTO.Addresses!.Add(permanent_Address);
-                _response = await studentContract!.UpdateAsync(student.Id , studentUpdateDTO);
+                studentUpdateDTO.Name = studentAddressModel.Name;
+                studentUpdateDTO.Email = studentAddressModel.Email;
+                studentUpdateDTO.Gender = studentAddressModel.Gender;
+                studentUpdateDTO.DateOfBirth = studentAddressModel.DateOfBirth;
+                studentUpdateDTO.IsHindi = studentAddressModel.IsHindi;
+                studentUpdateDTO.IsEnglish = studentAddressModel.IsEnglish;
+
+                studentUpdateDTO.Addresses!.Add(new AddressUpdateDTO
+                {
+                    Id = current_AddressId,
+                    City = studentAddressModel.CurrentCity,
+                    State = studentAddressModel.CurrentState,
+                    Country = studentAddressModel.CurrentCountry,
+                    ZipCode = studentAddressModel.CurrentZipCode,
+                    IsPermanent = false
+                });
+                studentUpdateDTO.Addresses.Add(new AddressUpdateDTO
+                {
+                    Id = permanent_AddressId,
+                    City = studentAddressModel.PermanentCity,
+                    State = studentAddressModel.PermanentState,
+                    Country = studentAddressModel.PermanentCountry,
+                    ZipCode = studentAddressModel.PermanentZipCode,
+                    IsPermanent = true
+                });
+                _response = await studentContract!.UpdateAsync(studentId , studentUpdateDTO);
                 if (_response.IsSuccess)
                 {
                     Toast!.ShowSuccess("Student Updated Successfully");
