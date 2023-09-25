@@ -23,33 +23,27 @@ namespace BAL.Services
             _response = new ResponseDTO();
         }
 
-        public async Task<ResponseDTO> GetAsync()
+        public async Task<ResponseDTO> GetAsync(string searchString , int index = 1 , int limit = 10)
         {
             try
             {
-                List<Student> students = await _studentRepository.GetAsync();
-                List<StudentReponseDTO> studentReponseDTOs = new List<StudentReponseDTO>();
-                foreach (var student in students)
-                {
-                    List<Address> addresses = await _addressRepository.GetByStudentIdAsync(student!.Id);
+                var dataModel = await _studentRepository.GetAsync(searchString , index , limit);
+                var studentReponseDTOs = new List<StudentReponseDTO>();
 
-                    var responseData = new StudentReponseDTO()
-                    {
-                        Id = student.Id,
-                        Name = student.Name,
-                        Email = student.Email,
-                        Gender = student.Gender,
-                        DateOfBirth = student.DateOfBirth,
-                        IsHindi = student.IsHindi,
-                        IsEnglish = student.IsEnglish,
-                        CreatedAt = student.CreatedAt,
-                        UpdatedAt = student.UpdatedAt,
-                        Addresses = _mapper.Map<List<AddressResponseDTO>>(addresses)
-                    };
-                    studentReponseDTOs.Add(responseData);
+                foreach (var student in dataModel.Data)
+                {
+                    var addresses = await _addressRepository.GetByStudentIdAsync(student!.Id);
+                    StudentReponseDTO studentResponseDTO = _mapper.Map<StudentReponseDTO>(student);
+                    studentResponseDTO.Addresses = _mapper.Map<List<AddressResponseDTO>>(addresses);
+                    studentReponseDTOs.Add(studentResponseDTO);
                 }
+                var dataModelDTO = new DataModelDTO()
+                {
+                    Data = studentReponseDTOs,
+                    TotalCount = dataModel.TotalCount
+                };
                 _response.Message = "Student List";
-                _response.Data = studentReponseDTOs;
+                _response.Data = dataModelDTO;
                 return _response;
             }
             catch (Exception)
@@ -118,22 +112,12 @@ namespace BAL.Services
                     await _addressRepository.CreateAsync(address);
                 }
 
-                List<Address> addresses = await _addressRepository.GetByStudentIdAsync(student!.Id);
-                var responseData = new StudentReponseDTO()
-                {
-                    Id = student.Id,
-                    Name = student.Name,
-                    Email = student.Email,
-                    Gender = student.Gender,
-                    DateOfBirth = student.DateOfBirth,
-                    IsHindi = student.IsHindi,
-                    IsEnglish = student.IsEnglish,
-                    CreatedAt = student.CreatedAt,
-                    UpdatedAt = student.UpdatedAt,
-                    Addresses = _mapper.Map<List<AddressResponseDTO>>(addresses)
-                };
+                var addresses = await _addressRepository.GetByStudentIdAsync(student!.Id);
+                StudentReponseDTO studentResponseDTO = _mapper.Map<StudentReponseDTO>(student);
+                studentResponseDTO.Addresses = _mapper.Map<List<AddressResponseDTO>>(addresses);
+                
                 _response.Message = "Student Created Successfully";
-                _response.Data = responseData;
+                _response.Data = studentResponseDTO;
                 return _response;
             }
             catch (Exception)
@@ -147,7 +131,7 @@ namespace BAL.Services
         {
             try
             {
-                Student student = await _studentRepository.GetByIdAsync(Id);
+                var student = await _studentRepository.GetByIdAsync(Id);
                 if (student == null)
                 {
                     _response.IsSuccess = false;
@@ -155,7 +139,7 @@ namespace BAL.Services
                     _response.Message = "Student Not Found";
                     return _response;
                 }
-                List<Address> addresses = await _addressRepository.GetByStudentIdAsync(Id);
+                var addresses = await _addressRepository.GetByStudentIdAsync(Id);
                 foreach (var add in addresses)
                 {
                     await _addressRepository.DeleteAsync(add);
@@ -176,7 +160,7 @@ namespace BAL.Services
         {
             try
             {
-                Student student = await _studentRepository.GetByIdAsync(Id);
+                var student = await _studentRepository.GetByIdAsync(Id);
                 if (student == null)
                 {
                     _response.IsSuccess = false;
@@ -184,24 +168,12 @@ namespace BAL.Services
                     _response.Message = "Student Not Found";
                     return _response;
                 }
+                var addresses = await _addressRepository.GetByStudentIdAsync(student!.Id);
 
-                List<Address> addresses = await _addressRepository.GetByStudentIdAsync(student!.Id);
-                var responseData = new StudentReponseDTO()
-                {
-                    Id = student.Id,
-                    Name = student.Name,
-                    Email = student.Email,
-                    Gender = student.Gender,
-                    DateOfBirth = student.DateOfBirth,
-                    IsHindi = student.IsHindi,
-                    IsEnglish = student.IsEnglish,
-                    CreatedAt = student.CreatedAt,
-                    UpdatedAt = student.UpdatedAt,
-                    Addresses = _mapper.Map<List<AddressResponseDTO>>(addresses)
-                };
-
+                StudentReponseDTO studentResponseDTO = _mapper.Map<StudentReponseDTO>(student);
+                studentResponseDTO.Addresses = _mapper.Map<List<AddressResponseDTO>>(addresses);
                 _response.Message = "Student Details";
-                _response.Data = responseData;
+                _response.Data = studentResponseDTO;
                 return _response;
 
             }
@@ -216,7 +188,7 @@ namespace BAL.Services
         {
             try
             {
-                Student student = await _studentRepository.GetByIdAsync(Id);
+                var student = await _studentRepository.GetByIdAsync(Id);
                 if (student == null)
                 {
                     _response.IsSuccess = false;
@@ -234,8 +206,8 @@ namespace BAL.Services
                 {
                     if (student.Email!.ToLower() != studentDTO.Email.ToLower())
                     {
-                        Student isExist = await _studentRepository.GetByEmailAsync(studentDTO.Email);
-                        if (isExist != null)
+                        var isStudentExist = await _studentRepository.GetByEmailAsync(studentDTO.Email);
+                        if (isStudentExist != null)
                         {
                             _response.IsSuccess = false;
                             _response.StatusCode = HttpStatusCode.BadRequest;
@@ -245,10 +217,12 @@ namespace BAL.Services
                         student.Email = studentDTO.Email;
                     }
                 }
+
                 student.DateOfBirth = studentDTO.DateOfBirth;
                 student.Gender = studentDTO.Gender;
                 student.IsEnglish = studentDTO.IsEnglish;
                 student.IsHindi = studentDTO.IsHindi;
+                student.ProfileImage = studentDTO.ProfileImage;
                 
                 student.UpdatedAt = DateTime.Now;
                 await _studentRepository.UpdateAsync(student);
@@ -270,28 +244,15 @@ namespace BAL.Services
                     }
                 }
 
-                List<Address> addresses = await _addressRepository.GetByStudentIdAsync(student!.Id);
-                var responseData = new StudentReponseDTO()
-                {
-                    Id = student.Id,
-                    Name = student.Name,
-                    Email = student.Email,
-                    Gender = student.Gender,
-                    DateOfBirth = student.DateOfBirth,
-                    IsHindi = student.IsHindi,
-                    IsEnglish = student.IsEnglish,
-                    CreatedAt = student.CreatedAt,
-                    UpdatedAt = student.UpdatedAt,
-                    Addresses = _mapper.Map<List<AddressResponseDTO>>(addresses)
-                };
+                var addresses = await _addressRepository.GetByStudentIdAsync(student!.Id);
+                StudentReponseDTO studentResponseDTO = _mapper.Map<StudentReponseDTO>(student);
+                studentResponseDTO.Addresses = _mapper.Map<List<AddressResponseDTO>>(addresses);
                 _response.Message = "Student Details Updated";
-                _response.Data = responseData;
+                _response.Data = studentResponseDTO;
                 return _response;
-
             }
             catch (Exception)
             {
-
                 throw;
             }
         }

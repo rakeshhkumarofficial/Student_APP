@@ -12,6 +12,7 @@ namespace STUDENT_WEB.Models
         [EmailAddress(ErrorMessage = "Invalid email address.")]
         public string? Email { get; set; }
 
+        [Required(ErrorMessage = "Gender is required.")]
         public int Gender { get; set; }
 
         [Required(ErrorMessage = "Date of Birth is required.")]
@@ -19,6 +20,9 @@ namespace STUDENT_WEB.Models
         public DateTime DateOfBirth { get; set; }
         public bool IsHindi { get; set; }
         public bool IsEnglish { get; set; }
+
+        [Required(ErrorMessage = "Profile Image is required.")]
+        public string ProfileImage { get; set;  }
 
         [Required(ErrorMessage = "City is required.")]
         public string? CurrentCity { get; set; }

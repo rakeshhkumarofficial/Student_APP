@@ -16,24 +16,12 @@ namespace STUDENT_WEB.Pages.AddStudent
         public List<CountryResponse> _countryResponse = new List<CountryResponse>();
         [Inject]
         public IStudentContract? studentContract { get; set; }
-
         [Inject]
         public IAPIGatewayContract? apiGatewayContract { get; set; }
         [Inject]
         public IToastService? Toast { get; set; }
         [Inject]
         NavigationManager? navigationManager { get; set; }
-
-        //protected override async Task OnInitializedAsync()
-        //{
-        //    await GetCountryData();
-        //}
-        //protected async Task GetCountryData()
-        //{
-        //    _countryResponse = await apiGatewayContract!.GetCountryNameAsync();
-            
-        //    StateHasChanged();
-        //}
         protected async Task CreateStudent_Click(StudentAddressModel studentAddressModel)
         {
             try
@@ -45,6 +33,7 @@ namespace STUDENT_WEB.Pages.AddStudent
                 studentDTO.DateOfBirth = studentAddressModel.DateOfBirth;
                 studentDTO.IsHindi = studentAddressModel.IsHindi;
                 studentDTO.IsEnglish = studentAddressModel.IsEnglish;
+                studentDTO.ProfileImage = studentAddressModel.ProfileImage;
 
                 var currentAddress = new AddressDTO
                 {
@@ -54,6 +43,7 @@ namespace STUDENT_WEB.Pages.AddStudent
                     ZipCode = studentAddressModel.CurrentZipCode,
                     IsPermanent = false
                 };
+
                 studentDTO.Addresses!.Add(currentAddress);
                 var permanentAddress = new AddressDTO
                 {
@@ -64,16 +54,17 @@ namespace STUDENT_WEB.Pages.AddStudent
                     IsPermanent = true
                 };
                 studentDTO.Addresses.Add(permanentAddress);
-                
+
                 _response = await studentContract!.CreateAsync(studentDTO);
                 if (_response.IsSuccess)
                 {
-                    Toast!.ShowSuccess("Student Added Successfully");
+                    Toast!.ShowSuccess(_response.Message!);
+                    navigationManager!.NavigateTo("student-list");
                 }
-
-                await OnInitializedAsync();
-                StateHasChanged();
-                navigationManager!.NavigateTo("student-list");
+                else
+                {
+                    Toast!.ShowWarning(_response.Message!);
+                }        
             }
             catch (Exception)
             {

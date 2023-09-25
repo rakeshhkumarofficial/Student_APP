@@ -26,6 +26,9 @@ namespace STUDENT_SHARED.DTOs
         [JsonPropertyName("isEnglish")]
         public bool IsEnglish { get; set; }
 
+        [JsonPropertyName("profileImage")]
+        public string ProfileImage { get; set; }
+
         [JsonPropertyName("createdAt")]
         public DateTime CreatedAt { get; set; }
 

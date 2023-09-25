@@ -9,8 +9,10 @@ namespace BAL.Mappings
         public MappingProfile() {
 
             CreateMap<Student, StudentDTO>().ReverseMap();
-            CreateMap<Address, AddressDTO>().ReverseMap();
             CreateMap<Student, StudentUpdateDTO>().ReverseMap();
+            CreateMap<Student, StudentReponseDTO>().ReverseMap();
+
+            CreateMap<Address, AddressDTO>().ReverseMap();  
             CreateMap<Address, AddressUpdateDTO>().ReverseMap();
             CreateMap<Address, AddressResponseDTO>().ReverseMap();
         }

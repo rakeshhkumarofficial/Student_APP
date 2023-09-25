@@ -11,6 +11,7 @@
     margin: 0px;
 }
 
+
 .table thead {
     background-color: #e9ecef;
 }
@@ -47,3 +48,34 @@
 .shadow {
     box-shadow: 0 .5rem 1rem #00000026 !important;
 }
+
+.pagination-buttons {
+    text-decoration: none;
+    background-color: transparent;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+    border: none;
+}
+
+.pagination-buttons span {
+    color: black;
+}
+
+.currentPage {
+    border-color: #00000026;
+    background-color: transparent;
+    cursor: default;
+}
+
+.active-page {
+    border-color: lightgray;
+    background: #ff8750;
+    color: white;
+    cursor: default;
+}
+
+.active-row:hover {
+    background-color: aliceblue;
+}
+
+

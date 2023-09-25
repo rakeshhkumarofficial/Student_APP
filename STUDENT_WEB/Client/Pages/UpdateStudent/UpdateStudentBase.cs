@@ -28,7 +28,6 @@ namespace STUDENT_WEB.Pages.UpdateStudent
         NavigationManager? navigationManager { get; set; }
         protected override async Task OnInitializedAsync()
         {
-           // await GetCountryData();
             var uri = new Uri(navigationManager!.Uri);
             var idValue = System.Web.HttpUtility.ParseQueryString(uri.Query).Get("id");
             Guid.TryParse(idValue, out var studentId) ;
@@ -40,16 +39,13 @@ namespace STUDENT_WEB.Pages.UpdateStudent
             navigationManager!.NavigateTo("student-list");
         }
 
-        //protected async Task GetCountryData()
-        //{
-        //    _countryResponse = await apiGatewayContract!.GetCountryNameAsync();
-        //    StateHasChanged();
-        //}
         protected async Task LoadData(Guid Id)
         {
-            _response = await studentContract!.GetAsync(Id);
+            _response = await studentContract!.GetAsync(Id, "" , 1 , 1);
             string responseData = JsonSerializer.Serialize(_response!.Data);
             student = JsonSerializer.Deserialize<StudentReponseDTO>(responseData)!;
+
+            // covert studentResponseDTO to StudentAddressModel
             studentId = student.Id;
             studentAddressModel.Name = student.Name;
             studentAddressModel.Email = student.Email;
@@ -57,6 +53,8 @@ namespace STUDENT_WEB.Pages.UpdateStudent
             studentAddressModel.DateOfBirth = student.DateOfBirth;
             studentAddressModel.IsHindi = student.IsHindi;
             studentAddressModel.IsEnglish = student.IsEnglish;
+            studentAddressModel.ProfileImage = student.ProfileImage;
+
             AddressResponseDTO curr = student.Addresses.FirstOrDefault(x => x.IsPermanent == false)!;
             current_AddressId = curr.Id;
             studentAddressModel.CurrentCity = curr.City;
@@ -82,6 +80,7 @@ namespace STUDENT_WEB.Pages.UpdateStudent
                 studentUpdateDTO.DateOfBirth = studentAddressModel.DateOfBirth;
                 studentUpdateDTO.IsHindi = studentAddressModel.IsHindi;
                 studentUpdateDTO.IsEnglish = studentAddressModel.IsEnglish;
+                studentUpdateDTO.ProfileImage = studentAddressModel.ProfileImage;
 
                 studentUpdateDTO.Addresses!.Add(new AddressUpdateDTO
                 {
@@ -104,18 +103,22 @@ namespace STUDENT_WEB.Pages.UpdateStudent
                 _response = await studentContract!.UpdateAsync(studentId , studentUpdateDTO);
                 if (_response.IsSuccess)
                 {
-                    Toast!.ShowSuccess("Student Updated Successfully");
+                    Toast!.ShowSuccess(_response.Message!);
+                    await OnInitializedAsync();
+                    StateHasChanged();
+                    navigationManager!.NavigateTo("student-list");
                 }
-                await OnInitializedAsync();
-                StateHasChanged();
-                navigationManager!.NavigateTo("student-list");
+                else
+                {
+                    Toast!.ShowWarning(_response.Message!);
+                }
+               
             }
             catch (Exception)
             {
                 throw;
             }
         }
-
 
     }
 }

@@ -92,12 +92,24 @@ namespace DAL.Repositories
         /// Get all students
         /// </summary>
         /// <returns></returns>
-        public async Task<List<Student>> GetAsync()
+        public async Task<DataModel> GetAsync(string searchString, int index = 1, int limit = 10)
         {
             try
             {
-                List<Student>? students = await _dbContext.Student.ToListAsync();
-                return students!;
+                IQueryable<Student> query = _dbContext.Student;
+                var totalItemCount = await query.CountAsync();
+                if (!string.IsNullOrEmpty(searchString))
+                {
+                    query = query.Where(s => s.Name.Contains(searchString) || s.Email.Contains(searchString));
+                }
+                query = query.Skip((index - 1) * limit).Take(limit);
+                var students = await query.ToListAsync();
+                var dataModel = new DataModel()
+                {
+                    Data = students,
+                    TotalCount = totalItemCount,
+                };
+                return dataModel!;
             }
             catch (Exception)
             {

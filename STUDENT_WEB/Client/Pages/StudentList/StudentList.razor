@@ -1,18 +1,30 @@
 ﻿@page "/student-list"
+@using STUDENT_SHARED.DTOs;
+@using STUDENT_WEB.Models;
 @inherits StudentListBase
 @inject NavigationManager Navigation
 
 <DeleteConfirmation ConfirmationChanged="ConfirmDelete_Click" Title="Delete Student" Message="Are you sure ?" ButtonText="Yes, Delete"></DeleteConfirmation>
 
-
-@if (studentList.Count != 0)
+@if (TotalCount > 0)
 {
-    <h3>Student List</h3>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <h3>Student List</h3>
+            </div>
+            <div class="col">
+                <input class="form-control mb-3" value="@searchString" placeholder="Search.." @oninput="FilterStudents" style="width:180px;float:right;">
+            </div>
+        </div>
+    </div>
+    
     <div class="container-fluid shadow">
         <div class="row">
             <table class="table">
                 <thead>
                     <tr>
+                        <td>Profile</td>
                         <td>Name</td>
                         <td>Email</td>
                         <td>Gender</td>
@@ -25,7 +37,8 @@
                     @foreach (var student in studentList)
                     {
 
-                        <tr>
+                        <tr class="align-baseline active-row">
+                            <td><img src="@student.ProfileImage" style="height:30px;width:30px;border-radius:50%; border:0.5px solid gray;"></td>
                             <td>@student!.Name</td>
                             <td>@student.Email</td>
                             @if (student.Gender == 1)
@@ -55,18 +68,90 @@
                                 <span class="Delete-button" @onclick:preventDefault=true @onclick="()=>HandleDelete(student!.Id)"><i class="fa-solid fa-trash"></i></span>
                             </td>
                         </tr>
+
+
                     }
                 </tbody>
             </table>
+        </div>
+        <div class="row">
+            <div class="col justify-content-end me-3 mt-3">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-end">
+                        <li class="page-item">
+                            <button disabled="@IsFirstPage" @onclick="GoToPreviousPage" class="pagination-buttons">
+                                <span aria-hidden="true" class="page-link">&laquo;</span>
+                            </button>
+
+                        </li>
+                        @for (int i = 1; i <= LastPage; i++)
+                        {
+                            int curr = i;
+                            <li class="page-item me-1"><span class="page-link @(curr == index ? "active-page" : "currentPage")" @onclick="()=>GoToCurrentPage(curr)">@curr</span></li>
+                        }
+                      
+                        <li class="page-item">
+                            <button disabled="@IsLastPage" @onclick="GoToNextPage" class="pagination-buttons">
+                                <span aria-hidden="true" class="page-link">&raquo;</span>
+                            </button>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
         </div>
 
     </div>
 }
 else
 {
-    <h3>No Records</h3>
+    if (isLoading)
+    {
+        <Loader />
+    }
+    else
+    {
+        if (TotalCount == 0)
+        {
+            <NoRecordFound />
+        }
+    }
 }
+
 @code {
+
+    private bool IsFirstPage => index == 1;
+    private bool IsLastPage => index == (int)Math.Ceiling((double)TotalCount / limit);
+    private async void GoToNextPage()
+    {
+        if (!IsLastPage)
+        {
+            index++;
+            await LoadData();
+        }
+    }
+
+    private async void GoToCurrentPage(int curr)
+    {
+        
+         index = curr;
+         await LoadData();
+        
+    }
+
+    private  async void GoToPreviousPage()
+    {
+        if (!IsFirstPage)
+        {
+            index--;
+            await LoadData();
+        }
+    }
+
+    private async void FilterStudents(ChangeEventArgs e)
+    {
+        searchString = e.Value.ToString();
+        await LoadData();
+    }
     private void NavigateToEditStudent(Guid Id)
     {
         string url = $"/edit-student?id={Id}";

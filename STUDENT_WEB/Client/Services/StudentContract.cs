@@ -53,7 +53,7 @@ namespace STUDENT_WEB.Services
             }
         }
 
-        public async Task<ResponseDTO> GetAsync(Guid Id)
+        public async Task<ResponseDTO> GetAsync(Guid Id , string searchString , int index , int limit )
         {
             try
             {
@@ -62,6 +62,15 @@ namespace STUDENT_WEB.Services
                 {
                     apiUrl += $"id={Id}&";
                 }
+
+                if (!string.IsNullOrEmpty(searchString))
+                {
+                    apiUrl += $"searchString={searchString}&";
+                }
+                
+                apiUrl += $"index={index}&";
+                apiUrl += $"limit={limit}&";
+
                 var response = await _httpClient.GetFromJsonAsync<ResponseDTO>(apiUrl.TrimEnd('&'));
                 Console.WriteLine(response);
                 return response!;

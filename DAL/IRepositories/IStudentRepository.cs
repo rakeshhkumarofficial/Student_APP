@@ -8,7 +8,7 @@ namespace DAL.IRepositories
         public Task UpdateAsync(Student student);
         public Task DeleteAsync(Student student);
         public Task<Student> GetByIdAsync(Guid Id);
-        public Task<List<Student>> GetAsync();
+        public Task<DataModel> GetAsync(string searchString , int index = 1, int limit = 10);
         public Task<Student> GetByEmailAsync(string Email);
     }
 }

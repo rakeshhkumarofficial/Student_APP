@@ -2,7 +2,6 @@
 {
     public class CountryResponse
     {
-        
        public string name { get; set; }
         
     }

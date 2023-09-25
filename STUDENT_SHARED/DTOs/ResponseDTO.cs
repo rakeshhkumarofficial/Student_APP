@@ -12,6 +12,6 @@ namespace STUDENT_SHARED.DTOs
         [JsonPropertyName("message")]
         public string? Message { get; set; }
         [JsonPropertyName("data")]
-        public object? Data { get; set; } = new object();
+        public object Data { get; set; } = new object();
     }
 }
