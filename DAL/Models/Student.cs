@@ -11,7 +11,7 @@ namespace DAL.Models
         public DateTime DateOfBirth { get; set; }
         public bool IsHindi { get; set; } 
         public bool IsEnglish { get; set; }
-        public string ProfileImage { get; set; }
+        public string ProfileImage { get; set; } = string.Empty;
         public DateTime CreatedAt { get;set; }
         public DateTime UpdatedAt { get; set; }
     }

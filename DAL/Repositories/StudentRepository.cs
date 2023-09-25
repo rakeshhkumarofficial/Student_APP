@@ -2,6 +2,10 @@
 using DAL.Data;
 using DAL.Models;
 using DAL.IRepositories;
+using Microsoft.Data.SqlClient;
+using System.Data;
+using System.Reflection;
+using Azure;
 
 namespace DAL.Repositories
 {
@@ -22,8 +26,21 @@ namespace DAL.Repositories
         {
             try
             {
-                await _dbContext.Student.AddAsync(student);
-                await _dbContext.SaveChangesAsync();
+                // await _dbContext.Student.AddAsync(student);
+                // await _dbContext.SaveChangesAsync();
+                student.Id = Guid.NewGuid();
+                string Id = student.Id.ToString();
+                student.ProfileImage = "hsfs";
+                string dob = student.DateOfBirth.ToString("yyyy-MM-dd HH:mm:ss");
+                string created = student.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss");
+                string updated = student.UpdatedAt.ToString("yyyy-MM-dd HH:mm:ss");
+                string StoredProc = $"EXEC CreateStudent @Id='{Id}', @Name = '{student.Name}', @Email = '{student.Email}', @Gender = {student.Gender} ,@DateOfBirth = '{dob}', @IsHindi={student.IsHindi}, @IsEnglish = {student.IsEnglish}, @ProfileImage ={student.ProfileImage}, @CreatedAt='{created}', @UpdatedAt ='{updated}'";
+            
+                
+                await _dbContext.Database.ExecuteSqlRawAsync(StoredProc);
+
+
+
             }
             catch (Exception)
             {
@@ -78,8 +95,12 @@ namespace DAL.Repositories
         {
             try
             {
-                Student? student = await _dbContext.Student.FirstOrDefaultAsync(x=>x.Id==Id);
-                return student!;
+                //var student = await _dbContext.Student.FirstOrDefaultAsync(x=>x.Id==Id);
+                
+                string StoredProc = "EXEC GetStudentById @Id";
+                var student = await _dbContext.Student.FromSqlRaw(StoredProc, new SqlParameter("@Id", Id)).ToListAsync();
+                return student[0];
+
             }
             catch (Exception)
             {
@@ -96,20 +117,44 @@ namespace DAL.Repositories
         {
             try
             {
-                IQueryable<Student> query = _dbContext.Student;
-                var totalItemCount = await query.CountAsync();
-                if (!string.IsNullOrEmpty(searchString))
+                //IQueryable<Student> query = _dbContext.Student;
+                //var totalItemCount = await query.CountAsync();
+                //if (!string.IsNullOrEmpty(searchString))
+                //{
+                //    query = query.Where(s => s.Name.Contains(searchString) || s.Email.Contains(searchString));
+                //}
+                //query = query.Skip((index - 1) * limit).Take(limit);
+                //var students = await query.ToListAsync();
+                //var dataModel = new DataModel()
+                //{
+                //    Data = students,
+                //    TotalCount = totalItemCount,
+                //};
+                //return dataModel!;
+
+                SqlParameter totalCountParam = new SqlParameter("@TotalCount", SqlDbType.Int)
                 {
-                    query = query.Where(s => s.Name.Contains(searchString) || s.Email.Contains(searchString));
-                }
-                query = query.Skip((index - 1) * limit).Take(limit);
-                var students = await query.ToListAsync();
+                    Direction = ParameterDirection.Output
+                };
+
+                string StoredProc = "EXEC GetStudents @searchString, @index, @limit, @TotalCount OUTPUT";
+                var students = await _dbContext.Student
+                    .FromSqlRaw(StoredProc,
+                        new SqlParameter("@searchString", searchString ?? ""),
+                        new SqlParameter("@index", index),
+                        new SqlParameter("@limit", limit),
+                        totalCountParam)
+                    .ToListAsync();
+
+                int totalItemCount = (int)totalCountParam.Value;
+
                 var dataModel = new DataModel()
                 {
                     Data = students,
-                    TotalCount = totalItemCount,
+                    TotalCount = totalItemCount
                 };
-                return dataModel!;
+
+                return dataModel;
             }
             catch (Exception)
             {
